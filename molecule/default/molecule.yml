@@ -1,0 +1,34 @@
+---
+dependency:
+  name: "galaxy"
+  options:
+    requirements-file: "molecule/resources/requirements.yml"
+    role-file: "molecule/resources/requirements.yml"
+
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+
+platforms:
+  - name: "vagrant-instance"
+    box: "generic/${MOLECULE_DISTRO:-ubuntu2204}"
+    memory: 2048
+    cpus: 2
+
+  - name: "lxd-instance"
+    url: "${LXD_HOST:-unix:/var/snap/lxd/common/lxd/unix.socket}"
+    source:
+      alias: "${MOLECULE_DISTRO:-ubuntu/20.04}"
+
+provisioner:
+  name: "ansible"
+  log: true
+  env:
+    ANSIBLE_COLLECTIONS_PATH: "../../collections"
+    ANSIBLE_ROLES_PATH: "../../roles"
+  playbooks:
+    converge: "../resources/playbooks/converge.yml"
+
+verifier:
+  name: "ansible"

@@ -1,0 +1,34 @@
+---
+galaxy_info:
+  role_name: "pgadmin_docker"
+  author: "organicveggie"
+  description: "Role to install pgAdmin Docker container on Linux."
+
+  license: "license GPL-3.0-only"
+
+  min_ansible_version: "2.13"
+
+  platforms:
+    - name: "EL"
+      versions:
+        - "8"
+    - name: "Fedora"
+      versions:
+        - "35"
+        - "36"
+    - name: "Debian"
+      versions:
+        - "buster"
+        - "bullseye"
+    - name: "Ubuntu"
+      versions:
+        - "bionic"
+        - "focal"
+        - "jammy"
+  galaxy_tags:
+    - "postgres"
+    - "postgresql"
+    - "docker"
+    - "linux"
+
+dependencies: []

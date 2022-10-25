@@ -1,0 +1,14 @@
+---
+argument_specs:
+  main:
+    short_description: "Install pgAdmin on Docker."
+    description:
+      - "The main entry point does everything."
+
+    options:
+      option_name_todo:
+        type: "str"
+        required: false
+        default: "todo"
+        description: |
+          TODO

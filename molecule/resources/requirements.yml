@@ -1,0 +1,11 @@
+---
+collections:
+  - name: "community.docker"
+    version: ">=3.1.0,<4"
+  - name: "community.general"
+    version: ">=5.0.0,<6"
+
+roles:
+  - src: "geerlingguy.repo-epel"
+  - src: "geerlingguy.pip"
+  - src: "geerlingguy.docker"

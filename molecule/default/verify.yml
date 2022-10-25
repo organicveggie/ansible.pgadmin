@@ -1,0 +1,10 @@
+---
+- name: "Verify"
+  hosts: "all"
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: "Test"
+      ansible.builtin.assert:
+        that: true
