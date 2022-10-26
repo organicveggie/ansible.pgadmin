@@ -1,1 +1,74 @@
 ---
+- name: "Create PgAdmin group"
+  ansible.builtin.group:
+    name: "{{ pgadmin_docker_group }}"
+    gid: "{{ pgadmin_docker_guid }}"
+    state: present
+
+- name: "Create PgAdmin user"
+  ansible.builtin.user:
+    name: "{{ pgadmin_docker_user }}"
+    uid: "{{ pgadmin_docker_uid }}"
+    shell: /usr/bin/false
+    state: present
+    password: "*"
+    update_password: always
+    create_home: no
+    group: "{{ pgadmin_docker_group }}"
+
+- name: "Create pgAdmin directories for bind mounts"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ pgadmin_docker_user }}"
+    group: "{{ pgadmin_docker_group }}"
+    mode: "0770"
+    state: directory
+  loop:
+    - "{{ pgadmin_docker_conf_dir }}"
+    - "{{ pgadmin_docker_dir }}"
+  when: "not pgadmin_docker_use_volumes"
+
+- name: Create pgadmin volumes
+  community.docker.docker_volume:
+    name: "{{ item }}"
+  loop:
+    - "{{ pgadmin_docker_volume_conf_name }}"
+    - "{{ pgadmin_docker_volume_data_name }}"
+  when: pgadmin_docker_use_volumes
+
+- name: "Get info on conf Docker volume"
+  community.docker.docker_volume_info:
+    name: "{{ pgadmin_docker_volume_conf_name }}"
+  register: "_pgadmin_docker_volume_info"
+  when: pgadmin_docker_use_volumes
+
+- name: "Register path to servers.json for bind mount"
+  ansible.builtin.set_fact:
+    _pgadmin_docker_conf_path: "{{ pgadmin_docker_conf_dir }}"
+  when: not pgadmin_docker_use_volumes
+
+- name: "Register path to servers.json for volume mount"
+  ansible.builtin.set_fact:
+    _pgadmin_docker_conf_path: "{{ _pgadmin_docker_volume_info['volume']['Mountpoint'] }}"
+  when: pgadmin_docker_use_volumes
+
+- name: "Define servers"
+  ansible.builtin.set_fact:
+    _pgadmin_docker_servers_yaml:
+      Servers:
+        "{{ pgadmin_docker_servers }}"
+  when: "pgadmin_docker_servers is defined"
+
+- name: "Define servers.json"
+  ansible.builtin.set_fact:
+    pgadmin_docker_servers_json: "{{ _pgadmin_docker_servers_yaml | to_nice_json(indent=2) }}"
+  when: "pgadmin_docker_servers is defined"
+
+- name: "Create servers.json"
+  ansible.builtin.template:
+    src: "templates/servers.json"
+    dest: "{{ _pgadmin_docker_conf_path }}/servers.json"
+    owner: "{{ pgadmin_docker_user }}"
+    group: "{{ pgadmin_docker_group }}"
+    mode: "0660"
+  when: "pgadmin_docker_servers_json is defined"

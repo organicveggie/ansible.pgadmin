@@ -7,5 +7,5 @@ virtualenv venv
 echo pip install --upgrade pip
 pip install --upgrade pip
 
-echo pip install ansible molecule "ansible-lint" "molecule[docker]" "molecule-lxd" "molecule[lxd]"
-pip install ansible molecule "ansible-lint" "molecule[docker]" "molecule-lxd" "molecule[lxd]"
+echo pip install ansible molecule "ansible-lint molecule-vagrant molecule-lxd tox"
+pip install ansible molecule "ansible-lint molecule-vagrant molecule-lxd tox"

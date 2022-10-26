@@ -1,0 +1,12 @@
+---
+- name: "Create Docker network"
+  community.docker.docker_network:
+    name: "{{ pgadmin_docker_network_name }}"
+    driver: "{{ pgadmin_docker_network_driver }}"
+    enable_ipv6: "{{ pgadmin_docker_network_enable_ipv6 }}"
+    internal: "{{ pgadmin_docker_network_internal }}"
+    scope: "{{ pgadmin_docker_network_scope }}"
+    ipam_config:
+      - subnet: "{{ pgadmin_docker_network_subnet }}"
+        gateway: "{{ pgadmin_docker_network_gateway }}"
+  when: "pgadmin_docker_network_create"

@@ -1,0 +1,105 @@
+---
+- name: "Set Docker volume list for bind mounts"
+  ansible.builtin.set_fact:
+    fact_pgadmin_docker_mount_list:
+      - source: "{{ pgadmin_docker_conf_dir }}/servers.json"
+        target: "/pgadmin4/servers.json"
+        type: "bind"
+      - source: "{{ pgadmin_docker_dir }}"
+        target: "/var/lib/pgadmin"
+        type: "bind"
+  when: "not pgadmin_docker_use_volumes"
+
+- name: "Set Docker mount list for volume mounts"
+  ansible.builtin.set_fact:
+    fact_postgres_docker_mount_list:
+      - source: "{{ pgadmin_docker_volume_conf_name }}"
+        target: "/pgadmin4"
+        type: "volume"
+      - source: "{{ pgadmin_docker_volume_data_name }}"
+        target: "/var/lib/pgadmin"
+        type: "volume"
+  when: "pgadmin_docker_use_volumes"
+
+- name: "Define Docker labels with Traefik disabled"
+  ansible.builtin.set_fact:
+    pgadmin_docker_labels: "{{ pgadmin_docker_labels | default({}) |
+      combine({item.key: item.value}) }}"
+  with_items:
+    - key: "traefik.enable"
+      value: "{{ pgadmin_docker_available_externally }}"
+  when: "not pgadmin_docker_available_externally"
+
+- name: "Define Docker labels with Traefik enabled"
+  ansible.builtin.set_fact:
+    pgadmin_docker_labels: "{{ pgadmin_docker_labels | default({}) |
+      combine({item.key: item.value}) }}"
+  with_items:
+    - key: "traefik.enable"
+      value: "{{ pgadmin_docker_available_externally }}"
+    - key: "traefik.http.routers.pgadmin.rule"
+      value: "Host(`{{ pgadmin_docker_host_name }}.{{ pgadmin_docker_host_domain }}`)"
+    - key: "traefik.http.routers.pgadmin.entrypoints"
+      value: "http,https"
+    - key: "traefik.http.routers.pgadmin.tls.certresolver"
+      value: "letsencrypt"
+    - key: "traefik.http.routers.pgadmin.tls.domains[0].main"
+      value: "*.{{ pgadmin_docker_host_domain }}"
+    - key: "traefik.http.services.pgadmin.loadbalancer.server.port"
+      value: "{{ pgadmin_docker_port }}"
+  when: "pgadmin_docker_available_externally"
+
+- name: "Convert created network into array of dictionary"
+  ansible.builtin.set_fact:
+    _pgadmin_docker_created_networks:
+      - name: "{{ pgadmin_docker_network_name }}"
+        ipv4_address: "{{ pgadmin_docker_network_ipv4 | default(omit) }}"
+        ipv6_address: "{{ pgadmin_docker_network_ipv6 | default(omit) }}"
+        aliases: "{{ pgadmin_docker_network_aliases | default(omit) }}"
+  when: "pgadmin_docker_network_create"
+
+- name: "Create placeholder array for created network"
+  ansible.builtin.set_fact:
+    _pgadmin_docker_created_networks: []
+  when: "not pgadmin_docker_network_create"
+
+- name: "Define all Docker networks for this container"
+  ansible.builtin.set_fact:
+    _pgadmin_docker_all_networks: >
+      {{ _pgadmin_docker_created_networks + pgadmin_docker_extra_networks }}
+
+- name: Create PgAdmin Docker Container
+  community.docker.docker_container:
+    name: "{{ pgadmin_docker_name }}"
+    image: "{{ pgadmin_docker_image }}"
+    pull: true
+    mounts: "{{ fact_postgres_docker_mount_list }}"
+    network_mode: "{{ pgadmin_docker_default_network }}"
+    networks:
+      - name: "{{ pgadmin_docker_network_name }}"
+        ipv4_address: "{{ pgadmin_docker_network_ipv4 | default(omit) }}"
+        ipv6_address: "{{ pgadmin_docker_network_ipv6 | default(omit) }}"
+    env:
+      PGADMIN_LISTEN_PORT: "{{ pgadmin_docker_port }}"
+      PGADMIN_DEFAULT_EMAIL: "{{ pgadmin_default_email }}"
+      PGADMIN_DEFAULT_PASSWORD: "{{ pgadmin_default_password }}"
+      PGADMIN_DISABLE_POSTFIX: "True"
+      PGADMIN_CONFIG_MAIL_SERVER: "'{{ pgadmin_docker_email_server | default(omit) }}'"
+      PGADMIN_CONFIG_MAIL_PORT: "{{ pgadmin_docker_email_port | default(omit) }}"
+      PGADMIN_CONFIG_MAIL_USE_SSL: "'{{ pgadmin_docker_email_use_ssl | default(omit) }}'"
+      PGADMIN_CONFIG_MAIL_USE_TLS: "'{{ pgadmin_docker_email_user_tls | default(omit) }}'"
+      PGADMIN_CONFIG_MAIL_USERNAME: "'{{ pgadmin_docker_email_username | default(omit) }}'"
+      PGADMIN_CONFIG_MAIL_PASSWORD: "'{{ pgadmin_docker_email_password | default(omit) }}'"
+    restart_policy: unless-stopped
+    memory: "{{ pgadmin_docker_memory | default(omit) }}"
+    cpus: "{{ pgadmin_docker_cpu | default(omit) }}"
+    container_default_behavior: no_defaults
+    auto_remove: no
+    detach: yes
+    init: yes
+    interactive: no
+    paused: no
+    privileged: no
+    read_only: no
+    tty: no
+    labels: "{{ pgadmin_docker_labels }}"

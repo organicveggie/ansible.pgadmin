@@ -1,1 +1,68 @@
 ---
+pgadmin_docker_name: "pgadmin"
+pgadmin_docker_image: "dpage/pgadmin4:latest"
+
+pgadmin_docker_port: "5050"
+
+pgadmin_docker_cpu: "1"
+pgadmin_docker_memory: "1GB"
+
+pgadmin_default_email: "admin@example.com"
+pgadmin_default_password: "changeme"
+
+pgadmin_docker_dir: "/var/lib/pgadmin"
+pgadmin_docker_conf_dir: "/etc/pgadmin"
+
+pgadmin_docker_use_volumes: true
+pgadmin_docker_volume_conf_name: "pgadmin-conf"
+pgadmin_docker_volume_data_name: "pgadmin-data"
+
+pgadmin_docker_network_create: false
+pgadmin_docker_network_name: "pgadmin"
+pgadmin_docker_network_driver: "bridge"
+pgadmin_docker_network_enable_ipv6: "false"
+pgadmin_docker_network_internal: "yes"
+pgadmin_docker_network_scope: "local"
+pgadmin_docker_network_subnet: "172.101.1.0/24"
+pgadmin_docker_network_gateway: "172.101.1.1"
+pgadmin_docker_network_aliases: []
+pgadmin_docker_network_ipv4: null
+pgadmin_docker_network_ipv6: null
+pgadmin_docker_default_network: "{{ pgadmin_docker_network_name }}"
+pgadmin_docker_extra_networks: []
+
+# pgadmin_docker_servers:
+#   postgres:
+#     name: "Postgres Example"
+#     group: "sample"
+#     port: "5432"
+#     username: "postgres"
+#     host: "db.example.com"
+#     # One of: allow, prefer, require', disable, verify-ca, verify-full
+#     ssl_mode: "prefer"
+#     maintenance_db: "postgres"
+
+###
+### Email
+###
+pgadmin_docker_email_server: "example.com"
+pgadmin_docker_email_port: "25"
+pgadmin_docker_email_use_ssl: "False"
+pgadmin_docker_email_user_tls: "False"
+pgadmin_docker_email_username: null
+pgadmin_docker_email_password: null
+
+###
+### Traefik
+###
+pgadmin_docker_available_externally: "true"
+pgadmin_docker_host_name: "pgadmin"
+pgadmin_docker_host_domain: "example.com"
+
+###
+### Don't Change
+###
+pgadmin_docker_user: "pgadmin"
+pgadmin_docker_uid: 5050
+pgadmin_docker_group: "pgadmin"
+pgadmin_docker_guid: 5050

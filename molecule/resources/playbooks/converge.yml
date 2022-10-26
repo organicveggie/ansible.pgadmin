@@ -6,6 +6,7 @@
   vars:
     pip_install_packages:
       - name: "docker"
+    pgadmin_docker_network_create: true
 
   pre_tasks:
     - name: "Update apt cache"

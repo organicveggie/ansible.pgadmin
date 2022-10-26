@@ -1,1 +1,28 @@
 ---
+- name: "Run general setup"
+  ansible.builtin.import_tasks: "setup.yml"
+  tags:
+    - "pgadmin"
+    - "pgadmin_docker"
+    - "pgadmin:setup"
+    - "postgres"
+    - "postgresql"
+
+- name: "Run network setup"
+  ansible.builtin.import_tasks: "network.yml"
+  tags:
+    - "pgadmin"
+    - "pgadmin_docker"
+    - "pgadmin:network"
+    - "postgres"
+    - "postgresql"
+  when: "pgadmin_docker_network_create"
+
+- name: "Create container"
+  ansible.builtin.import_tasks: "container.yml"
+  tags:
+    - "pgadmin"
+    - "pgadmin_docker"
+    - "pgadmin:container"
+    - "postgres"
+    - 'postgresql'
