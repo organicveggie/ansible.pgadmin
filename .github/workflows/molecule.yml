@@ -37,13 +37,11 @@ jobs:
       - name: "Install Ansible role requirements"
         run: >
           ansible-galaxy role install --role-file molecule/resources/requirements.yml
-        working-directory: "organicveggie.pgadmin_docker"
 
       - name: "Run linters"
         run: |
           yamllint -c .yamllint -f github -s .
           ansible-lint
-        working-directory: "organicveggie.pgadmin_docker"
 
   molecule-full:
     name: "Molecule Full"
@@ -62,7 +60,7 @@ jobs:
       - name: "Check out the codebase."
         uses: "actions/checkout@v2"
         with:
-          path: "organicveggie.postgres_docker"
+          path: "organicveggie.pgadmin_docker"
 
       - name: "Set up Python 3."
         uses: "actions/setup-python@v4"
