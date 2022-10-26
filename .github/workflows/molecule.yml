@@ -44,3 +44,43 @@ jobs:
           yamllint -c .yamllint -f github -s .
           ansible-lint
         working-directory: "organicveggie.pgadmin_docker"
+
+  molecule-full:
+    name: "Molecule Full"
+    runs-on: "ubuntu-latest"
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - "centos/9-Stream/cloud"
+          # - "debian/bullseye/cloud"
+          # - "fedora/36/cloud"
+          - "ubuntu/22.04/cloud"
+        scenario: ["default"]
+
+    steps:
+      - name: "Check out the codebase."
+        uses: "actions/checkout@v2"
+        with:
+          path: "organicveggie.postgres_docker"
+
+      - name: "Set up Python 3."
+        uses: "actions/setup-python@v4"
+        with:
+          python-version: "3.x"
+
+      - name: "Initialize LXD"
+        uses: bonddim/action-lxd-init@stable
+
+      - name: "Install tox"
+        run: >
+          python -m pip install tox
+
+      - name: "Run Molecule tests."
+        run: >
+          tox -- --debug test --platform-name lxd-instance --driver-name lxd
+        env:
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
+          MOLECULE_DISTRO: "${{ matrix.distro }}"
+          MOLECULE_SCENARIO_NAME: "${{ matrix.scenario }}"
