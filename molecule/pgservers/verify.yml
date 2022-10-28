@@ -1,0 +1,49 @@
+---
+- name: "Verify"
+  hosts: "all"
+  gather_facts: false
+  become: true
+
+  vars:
+    pgadmin_docker_name: "postgres"
+    pgadmin_docker_volume_conf_name: "pgadmin-conf"
+
+  tasks:
+    - name: "Get info on conf volume"
+      community.docker.docker_volume_info:
+        name: "{{ pgadmin_docker_volume_conf_name }}"
+      register: "_volume_info_conf"
+
+    - name: "Verify conf volume exists"
+      ansible.builtin.assert:
+        that: "_volume_info_conf.exists"
+
+    - name: "Check for config file"
+      ansible.builtin.stat:
+        path: "{{ _volume_info_conf.volume['Mountpoint'] }}/servers.json"
+      register: "_servers_json_stat"
+
+    - name: "Verify config file exists"
+      ansible.builtin.assert:
+        that: "_servers_json_stat.stat.exists"
+
+    - name: "Load servers.json"
+      ansible.builtin.slurp:
+        src: "{{ _volume_info_conf.volume['Mountpoint'] }}/servers.json"
+      register: _servers_json
+
+    - name: "Convert severs.json to Ansible yaml"
+      ansible.builtin.set_fact:
+         _servers_yml: "{{ _servers_json['content'] | b64decode | from_json }}"
+
+    - name: "Debug"
+      ansible.builtin.debug:
+        msg: "{{ _servers_yml['Servers']['pg_two'] }}"
+
+    - name: "Verify contents of servers.json"
+      ansible.builtin.assert:
+        that:
+           - "_servers_yml['Servers']['pg_one'] is defined"
+           - "_servers_yml['Servers']['pg_two'] is defined"
+           - "_servers_yml['Servers']['pg_one']['host'] == 'pgone.example.com'"
+           - "_servers_yml['Servers']['pg_two']['host'] == 'pgtwo.example.com'"

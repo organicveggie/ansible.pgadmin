@@ -1,0 +1,38 @@
+---
+- name: "Converge"
+  hosts: "all"
+  become: true
+
+  vars:
+    pip_install_packages:
+      - name: "docker"
+    pgadmin_docker_network_create: true
+    pgadmin_docker_servers:
+      pg_one:
+        name: "Postgres Example 1"
+        group: "sample_one"
+        port: "5432"
+        username: "pgone"
+        host: "pgone.example.com"
+        ssl_mode: "prefer"
+        maintenance_db: "postgres"
+      pg_two:
+        name: "Postgres Example 2"
+        group: "sample_two"
+        port: "5432"
+        username: "pgtwo"
+        host: "pgtwo.example.com"
+        ssl_mode: "allow"
+        maintenance_db: "postgres"
+
+  pre_tasks:
+    - name: "Update apt cache"
+      ansible.builtin.apt:
+        cache_valid_time: 600
+        update_cache: "yes"
+      when: "ansible_os_family == 'Debian'"
+
+  roles:
+    - "geerlingguy.pip"
+    - "geerlingguy.docker"
+    - "organicveggie.pgadmin_docker"
