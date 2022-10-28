@@ -1,0 +1,56 @@
+---
+- name: "Verify"
+  hosts: "all"
+  gather_facts: false
+  become: true
+
+  vars:
+    pgadmin_docker_name: "pgadmin"
+    pgadmin_docker_volume_conf_name: "pgadmin-conf"
+    pgadmin_docker_volume_data_name: "pgadmin-data"
+    pgadmin_docker_network_name: "pgadmin"
+
+  tasks:
+    - name: "Get info on conf volume"
+      community.docker.docker_volume_info:
+        name: "{{ pgadmin_docker_volume_conf_name }}"
+      register: "_volume_info_conf"
+
+    - name: "Verify conf volume exists"
+      ansible.builtin.assert:
+        that: "_volume_info_conf.exists"
+
+    - name: "Get info on data volume"
+      community.docker.docker_volume_info:
+        name: "{{ pgadmin_docker_volume_data_name }}"
+      register: "_volume_info_data"
+
+    - name: "Verify data volume exists"
+      ansible.builtin.assert:
+        that: "_volume_info_data.exists"
+
+    - name: "Get info on default network"
+      community.docker.docker_network_info:
+        name: "{{ pgadmin_docker_network_name }}"
+      register: "_network_info"
+
+    - name: "Verify default network exists"
+      ansible.builtin.assert:
+        that: "_network_info.exists"
+
+    - name: "Get info on container"
+      community.docker.docker_container_info:
+        name: "{{ pgadmin_docker_name }}"
+      register: "container_info"
+
+    - name: "Verify container exists and is running"
+      ansible.builtin.assert:
+        that:
+          - "container_info.exists"
+          - "container_info.container['State']['Running']"
+
+    - name: "Verify container is attached to both networks"
+      ansible.builtin.assert:
+        that:
+          - "container_info.container['NetworkSettings']['Networks']['pgadmin']"
+          - "container_info.container['NetworkSettings']['Networks']['pgadmin-extra-01']"

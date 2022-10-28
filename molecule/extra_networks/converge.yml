@@ -1,0 +1,44 @@
+---
+- name: "Converge - Phase 1"
+  hosts: "all"
+  become: true
+
+  vars:
+    pip_install_packages:
+      - name: "docker"
+    pgadmin_docker_network_create: true
+
+  pre_tasks:
+    - name: "Update apt cache"
+      ansible.builtin.apt:
+        cache_valid_time: 600
+        update_cache: "yes"
+      when: "ansible_os_family == 'Debian'"
+
+  roles:
+    - "geerlingguy.pip"
+    - "geerlingguy.docker"
+
+- name: "Converge - Phase 2"
+  hosts: "all"
+  become: true
+
+  vars:
+    pgadmin_docker_network_create: true
+    pgadmin_docker_extra_networks:
+      - name: pgadmin-extra-01
+
+  pre_tasks:
+    - name: "Create extra Docker network"
+      community.docker.docker_network:
+        name: "pgadmin-extra-01"
+        driver: "bridge"
+        enable_ipv6: "false"
+        internal: "true"
+        scope: "local"
+        ipam_config:
+          - subnet: "172.102.2.0/24"
+            gateway: "172.102.2.1"
+
+  roles:
+    - "organicveggie.pgadmin_docker"
