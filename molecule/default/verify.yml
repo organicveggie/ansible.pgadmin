@@ -7,7 +7,7 @@
   vars:
     pgadmin_docker_name: "postgres"
     pgadmin_docker_volume_conf_name: "pgadmin-conf"
-    pgadmin_docker_volume_data_name: "postgresql-conf"
+    pgadmin_docker_volume_data_name: "pgadmin-data"
     pgadmin_docker_network_name: "pgadmin"
 
   tasks:

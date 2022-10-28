@@ -34,7 +34,7 @@
 
     - name: "Convert severs.json to Ansible yaml"
       ansible.builtin.set_fact:
-         _servers_yml: "{{ _servers_json['content'] | b64decode | from_json }}"
+        _servers_yml: "{{ _servers_json['content'] | b64decode | from_json }}"
 
     - name: "Debug"
       ansible.builtin.debug:
@@ -43,7 +43,7 @@
     - name: "Verify contents of servers.json"
       ansible.builtin.assert:
         that:
-           - "_servers_yml['Servers']['pg_one'] is defined"
-           - "_servers_yml['Servers']['pg_two'] is defined"
-           - "_servers_yml['Servers']['pg_one']['host'] == 'pgone.example.com'"
-           - "_servers_yml['Servers']['pg_two']['host'] == 'pgtwo.example.com'"
+          - "_servers_yml['Servers']['pg_one'] is defined"
+          - "_servers_yml['Servers']['pg_two'] is defined"
+          - "_servers_yml['Servers']['pg_one']['host'] == 'pgone.example.com'"
+          - "_servers_yml['Servers']['pg_two']['host'] == 'pgtwo.example.com'"
