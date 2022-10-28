@@ -75,10 +75,7 @@
     pull: true
     mounts: "{{ fact_postgres_docker_mount_list }}"
     network_mode: "{{ pgadmin_docker_default_network }}"
-    networks:
-      - name: "{{ pgadmin_docker_network_name }}"
-        ipv4_address: "{{ pgadmin_docker_network_ipv4 | default(omit) }}"
-        ipv6_address: "{{ pgadmin_docker_network_ipv6 | default(omit) }}"
+    networks: "{{ _pgadmin_docker_all_networks }}"
     env:
       PGADMIN_LISTEN_PORT: "{{ pgadmin_docker_port }}"
       PGADMIN_DEFAULT_EMAIL: "{{ pgadmin_default_email }}"
