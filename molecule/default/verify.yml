@@ -5,7 +5,7 @@
   become: true
 
   vars:
-    pgadmin_docker_name: "postgres"
+    pgadmin_docker_name: "pgadmin"
     pgadmin_docker_volume_conf_name: "pgadmin-conf"
     pgadmin_docker_volume_data_name: "pgadmin-data"
     pgadmin_docker_network_name: "pgadmin"
@@ -38,12 +38,12 @@
       ansible.builtin.assert:
         that: "_network_info.exists"
 
-    - name: "Get info on container"
+    - name: "Get info on container: {{ pgadmin_docker_name }}"
       community.docker.docker_container_info:
         name: "{{ pgadmin_docker_name }}"
       register: "container_info"
 
-    - name: "Verify container exists and is running"
+    - name: "Verify {{ pgadmin_docker_name }} container exists and is running"
       ansible.builtin.assert:
         that:
           - "container_info.exists"
