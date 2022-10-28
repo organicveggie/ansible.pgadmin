@@ -43,7 +43,7 @@
         name: "{{ pgadmin_docker_name }}"
       register: "container_info"
 
-    - name: "Verify {{ pgadmin_docker_name }} container exists and is running"
+    - name: "Verify container exists and is running: {{ pgadmin_docker_name }}"
       ansible.builtin.assert:
         that:
           - "container_info.exists"

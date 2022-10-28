@@ -5,7 +5,7 @@
   become: true
 
   vars:
-    pgadmin_docker_name: "postgres"
+    pgadmin_docker_name: "pgadmin"
     pgadmin_docker_volume_conf_name: "pgadmin-conf"
 
   tasks:
