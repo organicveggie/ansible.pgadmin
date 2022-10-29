@@ -71,7 +71,7 @@
 - name: Create PgAdmin Docker Container
   community.docker.docker_container:
     name: "{{ pgadmin_docker_name }}"
-    image: "{{ pgadmin_docker_image_name }}/{{ pgadmin_docker_image_version }}"
+    image: "{{ pgadmin_docker_image_name }}:{{ pgadmin_docker_image_version }}"
     pull: true
     mounts: "{{ fact_postgres_docker_mount_list }}"
     network_mode: "{{ pgadmin_docker_default_network }}"
