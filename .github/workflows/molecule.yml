@@ -54,7 +54,7 @@ jobs:
           # - "debian/bullseye/cloud"
           # - "fedora/36/cloud"
           - "ubuntu/22.04/cloud"
-        scenario: ["default", "pgservers"]
+        scenario: ["default", "pgservers", "extra_networks"]
 
     steps:
       - name: "Check out the codebase."
