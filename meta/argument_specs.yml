@@ -6,9 +6,105 @@ argument_specs:
       - "The main entry point does everything."
 
     options:
-      option_name_todo:
+      pgadmin_docker_name:
         type: "str"
-        required: false
-        default: "todo"
+        default: "pgadmin"
+        description: "Name of the Docker container."
+
+      pgadmin_docker_image_name:
+        type: "str"
+        default: "dpage/pgadmin4"
+        description: "Base name of the Docker image to use for the container."
+
+      pgadmin_docker_image_version:
+        type: "str"
+        default: "latest"
+        description: "Specific Docker image version to use for the container."
+
+      pgadmin_docker_port:
+        type: "str"
+        default: "5050"
+        description: "TCP port number to expose to handle HTTP traffic."
+
+      pgadmin_docker_cpu:
+        type: "str"
+        default: "1"
+        description: "Number of vCPUs to allocate to the container."
+
+      pgadmin_docker_memory:
+        type: "str"
+        default: "1GB"
+        description: "Amount of memory to allocate to the container."
+
+      pgadmin_default_email:
+        type: "str"
+        default: "admin@example.com"
+        description: "Email address used as the initial administrator account."
+
+      pgadmin_default_password:
+        type: "str"
+        default: "changeme"
+        description: "Password for the initial administrator account."
+
+      pgadmin_docker_use_volumes:
+        type: "bool"
+        default: true
         description: |
-          TODO
+          Create and use Docker volumes for storing data. True creates volumes and attaches them to
+          the container. False creates folders and bind mounts them to the container.
+
+      pgadmin_docker_network_name:
+        type: "str"
+        default: "pgadmin"
+        description: |
+          Name of the default Docker network for the container. The container will *always* attach
+          to this network. If [pgadmin_docker_network_create] is true, this is also the name of the
+          network which will be created.
+
+      pgadmin_docker_extra_networks:
+        type: "list"
+        elements: "dict"
+        default: []
+        description: |
+          List of additional networks the container should attach to. Elements should be
+          dictionaries like
+          https://docs.ansible.com/ansible/latest/collections/community/docker/docker_container_module.html#parameter-networks.
+
+      pgadmin_docker_network_aliases:
+        type: "list"
+        elements: "str"
+        default: []
+        description:
+          List of aliases for this container in the default network. These names can be used in the
+          default network to reach this container.
+
+      pgadmin_docker_network_ipv4:
+        type: "str"
+        default: "null"
+        description: "The container’s IPv4 address in the default network. Defaults to using DHCP."
+
+      pgadmin_docker_network_ipv6:
+        type: "str"
+        default: "null"
+        description:
+          The container’s IPv6 address in the default network. Defaults to using DHCP. Only applies
+          if IPv6 is enabled in the default network.
+
+      pgadmin_docker_network_create:
+        type: "bool"
+        default: false
+        description:
+          Create the default Docker network. True creates network and attaches the container to it.
+          False does not create the network.
+
+      pgadmin_docker_servers:
+        type: "dict"
+        default: {}
+        description: |
+          Map of PostgreSQL server names to dictionaries of server details. Used to construct the
+          `servers.json` config file. pgAdmin uses `servers.json` to perform an initial import of
+          Postgres server definitions. Every server definition must include the following entries:
+            Name, Group, Port, Username, SSLMode, MaintenanceDB and one of Host, HostAddr or
+            Service.
+          See https://www.pgadmin.org/docs/pgadmin4/development/import_export_servers.html for
+          more details.
