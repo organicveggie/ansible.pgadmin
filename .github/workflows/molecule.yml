@@ -51,7 +51,7 @@ jobs:
       matrix:
         distro:
           - "centos/9-Stream/cloud"
-          - "debian/bullseye/cloud"
+          # - "debian/bullseye/cloud"
           - "fedora/36/cloud"
           - "ubuntu/22.04/cloud"
         scenario: ["default", "pgservers", "extra_networks"]
