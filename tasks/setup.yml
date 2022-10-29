@@ -2,7 +2,7 @@
 - name: "Create PgAdmin group"
   ansible.builtin.group:
     name: "{{ pgadmin_docker_group }}"
-    gid: "{{ pgadmin_docker_guid }}"
+    gid: "{{ pgadmin_docker_gid }}"
     state: present
 
 - name: "Create PgAdmin user"

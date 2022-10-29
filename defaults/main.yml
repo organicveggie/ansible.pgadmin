@@ -1,36 +1,112 @@
 ---
-pgadmin_docker_name: "pgadmin"
-pgadmin_docker_image: "dpage/pgadmin4:latest"
+#####
+# Container settings
+#####
 
+# Name of the Docker container.
+pgadmin_docker_name: "pgadmin"
+
+# Base name of the Docker image to use for the container.
+pgadmin_docker_image_name: "dpage/pgadmin4"
+
+# Specific Docker image version to use for the container.
+pgadmin_docker_image_version: "latest"
+
+# TCP port number to expose to handle HTTP traffic.
 pgadmin_docker_port: "5050"
 
+# Number of vCPUs to allocate to the container.
 pgadmin_docker_cpu: "1"
+
+# Amount of memory to allocate to the container.
 pgadmin_docker_memory: "1GB"
 
-pgadmin_default_email: "admin@example.com"
-pgadmin_default_password: "changeme"
+#####
+# Docker volumes and folders.
+#####
 
-pgadmin_docker_dir: "/var/lib/pgadmin"
-pgadmin_docker_conf_dir: "/etc/pgadmin"
-
+# Create and use Docker volumes for storing data. True creates volumes and attaches them to the
+# container. False creates folders and bind mounts them to the container.
 pgadmin_docker_use_volumes: true
+
+# Name of the Docker volume to create to store config files. Only used when
+# [pgadmin_docker_use_volumes] is true.
 pgadmin_docker_volume_conf_name: "pgadmin-conf"
+
+# Name of the Docker volume to create to store data files. Only used when
+# [pgadmin_docker_use_volumes] is true.
 pgadmin_docker_volume_data_name: "pgadmin-data"
 
-pgadmin_docker_network_create: false
+# Directory on filesystem to use for storing config files. Only used when
+# [pgadmin_docker_user_volumes] is false.
+pgadmin_docker_conf_dir: "/etc/pgadmin"
+
+# Directory on filesystem to use for storing data files. Only used when
+# [pgadmin_docker_user_volumes] is false.
+pgadmin_docker_dir: "/var/lib/pgadmin"
+
+#####
+# Docker networks
+#####
+
+# Name of the default Docker network for the container. The container will *always* attach to this
+# network. If [pgadmin_docker_network_create] is true, this is also the name of the network which
+# will be created.
 pgadmin_docker_network_name: "pgadmin"
-pgadmin_docker_network_driver: "bridge"
-pgadmin_docker_network_enable_ipv6: "false"
-pgadmin_docker_network_internal: "yes"
-pgadmin_docker_network_scope: "local"
-pgadmin_docker_network_subnet: "172.101.1.0/24"
-pgadmin_docker_network_gateway: "172.101.1.1"
-pgadmin_docker_network_aliases: []
-pgadmin_docker_network_ipv4: null
-pgadmin_docker_network_ipv6: null
-pgadmin_docker_default_network: "{{ pgadmin_docker_network_name }}"
+
+# List of additional networks the container should attach to. Elements should be dictionaries like
+# https://docs.ansible.com/ansible/latest/collections/community/docker/docker_container_module.html#parameter-networks.
 pgadmin_docker_extra_networks: []
 
+# List of aliases for this container in the default network. These names can be used in the default
+# network to reach this container.
+pgadmin_docker_network_aliases: []
+
+# The container’s IPv4 address in the default network. Defaults to using DHCP.
+pgadmin_docker_network_ipv4: null
+
+# The container’s IPv6 address in the default network. Defaults to using DHCP. Only applies if
+# IPv6 is enabled in the default network.
+pgadmin_docker_network_ipv6: null
+
+# Create the default Docker network. True creates network and attaches the container to it. False
+# does not create the network.
+pgadmin_docker_network_create: false
+
+# Driver to use for the default Docker network for the container. Only used when
+# [pgadmin_docker_network_create] is enabled. See https://docs.docker.com/network/#network-drivers
+# for available options.
+pgadmin_docker_network_driver: "bridge"
+
+# Enable IPv6 in the default Docker network for the container. Only used when
+# [pgadmin_docker_network_create] is enabled.
+pgadmin_docker_network_enable_ipv6: "false"
+
+# Restrict external access to the default network. See
+# https://docs.docker.com/engine/reference/commandline/network_create/#network-internal-mode.
+# Only used when [pgadmin_docker_network_create] is enabled.
+pgadmin_docker_network_internal: "yes"
+
+# Control the default network's scope. Only used when [pgadmin_docker_network_create] is enabled.
+pgadmin_docker_network_scope: "local"
+
+# IPv4 subnet for the default network. Only used when [pgadmin_docker_network_create] is enabled.
+pgadmin_docker_network_subnet: "172.101.1.0/24"
+
+# IPv4 gateway for the default network. Only used when [pgadmin_docker_network_create] is enabled.
+pgadmin_docker_network_gateway: "172.101.1.1"
+
+#####
+# Server Definitions
+#####
+
+# Map of PostgreSQL server names to dictionaries of server details. Used to construct the
+# `servers.json` config file. pgAdmin uses `servers.json` to perform an initial import of Postgres
+# server definitions. Every server definition must include the following entries:
+#   Name, Group, Port, Username, SSLMode, MaintenanceDB and one of Host, HostAddr or Service.
+#
+# Example:
+#
 # pgadmin_docker_servers:
 #   postgres:
 #     name: "Postgres Example"
@@ -41,10 +117,39 @@ pgadmin_docker_extra_networks: []
 #     # One of: allow, prefer, require', disable, verify-ca, verify-full
 #     ssl_mode: "prefer"
 #     maintenance_db: "postgres"
+#
+# See https://www.pgadmin.org/docs/pgadmin4/development/import_export_servers.html for more details.
+pgadmin_docker_servers: {}
 
-###
-### Email
-###
+#####
+# Traefik
+#####
+
+# Enable use of Traefik as a proxy.
+pgadmin_docker_available_externally: "true"
+
+# Host name to use for the Traefik endpoint. Combined with [pgadmin_docker_host_domain] to form the
+# FQDN for the endpoint.
+pgadmin_docker_host_name: "pgadmin"
+
+# Domain name to use for the Traefik endpoint. Combined with [pgadmin_docker_host_name] to form the
+# FQDN for the endpoint. Also used by Traefik to create the necessary Let's Encrypt certificate.
+pgadmin_docker_host_domain: "example.com"
+
+#####
+# Login settings
+#####
+
+# Email address used as the initial administrator account.
+pgadmin_default_email: "admin@example.com"
+
+# Password for the initial administrator account.
+pgadmin_default_password: "changeme"
+
+#####
+# Mail server settings
+#####
+
 pgadmin_docker_email_server: "example.com"
 pgadmin_docker_email_port: "25"
 pgadmin_docker_email_use_ssl: "False"
@@ -52,17 +157,21 @@ pgadmin_docker_email_user_tls: "False"
 pgadmin_docker_email_username: null
 pgadmin_docker_email_password: null
 
-###
-### Traefik
-###
-pgadmin_docker_available_externally: "true"
-pgadmin_docker_host_name: "pgadmin"
-pgadmin_docker_host_domain: "example.com"
+#####
+# Host user/group information. Do not change.
+#
+# Inside the container, pgAdmin runs as the pgadmin user (UID: 5050) in the pgadmin group
+# (GID: 5050). The uid and gid values below *must* match the values inside the container.
+#####
 
-###
-### Don't Change
-###
 pgadmin_docker_user: "pgadmin"
 pgadmin_docker_uid: 5050
 pgadmin_docker_group: "pgadmin"
-pgadmin_docker_guid: 5050
+pgadmin_docker_gid: 5050
+
+#####
+# Generated settings. Typically should not be overriden.
+#####
+
+# Name of the network the pgAdmin container should join by default.
+pgadmin_docker_default_network: "{{ pgadmin_docker_network_name }}"
