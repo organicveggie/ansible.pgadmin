@@ -14,7 +14,7 @@
         cache_valid_time: 600
         update_cache: "yes"
       when: "ansible_os_family == 'Debian'"
-    
+
     - name: "Upgrade LXC"
       ansible.builtin.dnf:
         name: "lxc,lxc-templates,lxc-extra"
