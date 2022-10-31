@@ -29,16 +29,12 @@ pgadmin_docker_memory: "1GB"
 # container. False creates folders and bind mounts them to the container.
 pgadmin_docker_use_volumes: true
 
-# Name of the Docker volume to create to store config files. Only used when
-# [pgadmin_docker_use_volumes] is true.
-pgadmin_docker_volume_conf_name: "pgadmin-conf"
-
 # Name of the Docker volume to create to store data files. Only used when
 # [pgadmin_docker_use_volumes] is true.
 pgadmin_docker_volume_data_name: "pgadmin-data"
 
-# Directory on filesystem to use for storing config files. Only used when
-# [pgadmin_docker_user_volumes] is false.
+# Directory on filesystem to use for storing config files. Used to store `servers.json`, even when
+# [pgadmin_docker_use_volumes] is false.
 pgadmin_docker_conf_dir: "/etc/pgadmin"
 
 # Directory on filesystem to use for storing data files. Only used when

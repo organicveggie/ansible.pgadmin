@@ -16,7 +16,15 @@
     create_home: no
     group: "{{ pgadmin_docker_group }}"
 
-- name: "Create pgAdmin directories for bind mounts"
+- name: "Create pgAdmin config directory for servers.json"
+  ansible.builtin.file:
+    path: "{{ pgadmin_docker_conf_dir }}"
+    owner: "{{ pgadmin_docker_user }}"
+    group: "{{ pgadmin_docker_group }}"
+    mode: "0770"
+    state: directory
+
+- name: "Create pgAdmin directory for bind mount"
   ansible.builtin.file:
     path: "{{ item }}"
     owner: "{{ pgadmin_docker_user }}"
@@ -24,7 +32,6 @@
     mode: "0770"
     state: directory
   loop:
-    - "{{ pgadmin_docker_conf_dir }}"
     - "{{ pgadmin_docker_dir }}"
   when: "not pgadmin_docker_use_volumes"
 
@@ -32,24 +39,7 @@
   community.docker.docker_volume:
     name: "{{ item }}"
   loop:
-    - "{{ pgadmin_docker_volume_conf_name }}"
     - "{{ pgadmin_docker_volume_data_name }}"
-  when: pgadmin_docker_use_volumes
-
-- name: "Get info on conf Docker volume"
-  community.docker.docker_volume_info:
-    name: "{{ pgadmin_docker_volume_conf_name }}"
-  register: "_pgadmin_docker_volume_info"
-  when: pgadmin_docker_use_volumes
-
-- name: "Register path to servers.json for bind mount"
-  ansible.builtin.set_fact:
-    _pgadmin_docker_conf_path: "{{ pgadmin_docker_conf_dir }}"
-  when: not pgadmin_docker_use_volumes
-
-- name: "Register path to servers.json for volume mount"
-  ansible.builtin.set_fact:
-    _pgadmin_docker_conf_path: "{{ _pgadmin_docker_volume_info['volume']['Mountpoint'] }}"
   when: pgadmin_docker_use_volumes
 
 - name: "Define servers"
@@ -67,7 +57,7 @@
 - name: "Create servers.json"
   ansible.builtin.template:
     src: "templates/servers.json"
-    dest: "{{ _pgadmin_docker_conf_path }}/servers.json"
+    dest: "{{ pgadmin_docker_conf_dir }}/servers.json"
     owner: "{{ pgadmin_docker_user }}"
     group: "{{ pgadmin_docker_group }}"
     mode: "0660"

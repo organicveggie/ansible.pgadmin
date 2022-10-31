@@ -13,9 +13,9 @@
 - name: "Set Docker mount list for volume mounts"
   ansible.builtin.set_fact:
     fact_postgres_docker_mount_list:
-      - source: "{{ pgadmin_docker_volume_conf_name }}"
-        target: "/pgadmin4"
-        type: "volume"
+      - source: "{{ pgadmin_docker_conf_dir }}/servers.json"
+        target: "/pgadmin4/servers.json"
+        type: "bind"
       - source: "{{ pgadmin_docker_volume_data_name }}"
         target: "/var/lib/pgadmin"
         type: "volume"
