@@ -92,7 +92,7 @@ jobs:
         distro:
           - "centos/8-Stream/cloud"
           # - "debian/buster/cloud"
-          - "fedora/35/cloud"
+          # - "fedora/35/cloud"
           - "ubuntu/20.04/cloud"
           - "ubuntu/18.04/cloud"
         scenario: ["default"]
