@@ -6,21 +6,12 @@
 
   vars:
     pgadmin_docker_name: "pgadmin"
-    pgadmin_docker_volume_conf_name: "pgadmin-conf"
+    pgadmin_docker_conf_dir: "/etc/pgadmin"
 
   tasks:
-    - name: "Get info on conf volume"
-      community.docker.docker_volume_info:
-        name: "{{ pgadmin_docker_volume_conf_name }}"
-      register: "_volume_info_conf"
-
-    - name: "Verify conf volume exists"
-      ansible.builtin.assert:
-        that: "_volume_info_conf.exists"
-
     - name: "Check for config file"
       ansible.builtin.stat:
-        path: "{{ _volume_info_conf.volume['Mountpoint'] }}/servers.json"
+        path: "{{ pgadmin_docker_conf_dir }}/servers.json"
       register: "_servers_json_stat"
 
     - name: "Verify config file exists"
@@ -29,7 +20,7 @@
 
     - name: "Load servers.json"
       ansible.builtin.slurp:
-        src: "{{ _volume_info_conf.volume['Mountpoint'] }}/servers.json"
+        src: "{{ pgadmin_docker_conf_dir }}/servers.json"
       register: _servers_json
 
     - name: "Convert severs.json to Ansible yaml"
