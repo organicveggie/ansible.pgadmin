@@ -12,9 +12,12 @@ on:
   schedule:
     - cron: "0 6 * * 0"
 
+env:
+  PROJECT_DIRECTORY: "organicveggie.pgadmin_docker"
+
 defaults:
   run:
-    working-directory: "organicveggie.calibre_web_docker"
+    working-directory: "$PROJECT_DIRECTORY"
 
 jobs:
   lint:
@@ -24,7 +27,7 @@ jobs:
       - name: "Check out the codebase."
         uses: "actions/checkout@v3"
         with:
-          path: "organicveggie.calibre_web_docker"
+          path: "$PROJECT_DIRECTORY"
 
       - name: "Set up Python 3."
         uses: "actions/setup-python@v4"

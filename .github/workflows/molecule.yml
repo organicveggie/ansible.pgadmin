@@ -12,9 +12,12 @@ on:
   # schedule:
   #   - cron: "0 7 * * 0"
 
+env:
+  PROJECT_DIRECTORY: "organicveggie.pgadmin_docker"
+
 defaults:
   run:
-    working-directory: "organicveggie.pgadmin_docker"
+    working-directory: "$PROJECT_DIRECTORY"
 
 jobs:
   molecule-full:
@@ -34,7 +37,7 @@ jobs:
       - name: "Check out the codebase."
         uses: "actions/checkout@v2"
         with:
-          path: "organicveggie.pgadmin_docker"
+          path: "$PROJECT_DIRECTORY"
 
       - name: "Set up Python 3."
         uses: "actions/setup-python@v4"
@@ -73,9 +76,9 @@ jobs:
 
     steps:
       - name: "Check out the codebase."
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v3"
         with:
-          path: "organicveggie.pgadmin_docker"
+          path: "$PROJECT_DIRECTORY"
 
       - name: "Set up Python 3."
         uses: "actions/setup-python@v4"
