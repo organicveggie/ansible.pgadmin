@@ -1,0 +1,44 @@
+---
+name: "Lint"
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+  workflow_dispatch: null
+  schedule:
+    - cron: "0 6 * * 0"
+
+defaults:
+  run:
+    working-directory: "organicveggie.calibre_web_docker"
+
+jobs:
+  lint:
+    name: "Lint"
+    runs-on: "ubuntu-22.04"
+    steps:
+      - name: "Check out the codebase."
+        uses: "actions/checkout@v3"
+        with:
+          path: "organicveggie.calibre_web_docker"
+
+      - name: "Set up Python 3."
+        uses: "actions/setup-python@v4"
+        with:
+          python-version: "3.x"
+
+      - name: "Install lint dependencies."
+        run: "pip3 install yamllint ansible ansible-lint"
+
+      - name: "Install Ansible role requirements"
+        run: >
+          ansible-galaxy role install --role-file molecule/resources/requirements.yml
+
+      - name: "Run linters"
+        run: |
+          yamllint -c .yamllint -f github -s .
+          ansible-lint
