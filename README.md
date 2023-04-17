@@ -1,7 +1,7 @@
 # Ansible Role: pgAdmin on Docker <!-- omit in toc -->
 
-[![github](https://github.com/organicveggie/ansible.pgadmin_docker/workflows/Molecule/badge.svg)](https://github.com/organicveggie/ansible.pgadmin_docker/actions)
-[![github](https://github.com/organicveggie/ansible.pgadmin_docker/workflows/Lint/badge.svg)](https://github.com/organicveggie/ansible.pgadmin_docker/actions)
+[![github](https://github.com/organicveggie/ansible.pgadmin_docker/workflows/Molecule/badge.svg)](https://github.com/organicveggie/ansible.pgadmin_docker/actions/workflows/molecule.yml)
+[![github](https://github.com/organicveggie/ansible.pgadmin_docker/workflows/Lint/badge.svg)](https://github.com/organicveggie/ansible.pgadmin_docker/actions/workflows/lint.yml)
 [![Issues](https://img.shields.io/github/issues/organicveggie/ansible.pgadmin_docker.svg)](https://github.com/organicveggie/ansible.pgadmin_docker/issues/)
 [![PullRequests](https://img.shields.io/github/issues-pr-closed-raw/organicveggie/ansible.pgadmin_docker.svg)](https://github.com/organicveggie/ansible.pgadmin_docker/pulls/)
 [![Last commit](https://img.shields.io/github/last-commit/organicveggie/ansible.pgadmin_docker?logo=github)](https://github.com/organicveggie/ansible.pgadmin_docker/commits/main)

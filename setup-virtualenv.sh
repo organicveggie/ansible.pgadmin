@@ -22,5 +22,5 @@ pip install --upgrade pip
 echo "pip install ansible ansible-navigator ansible-lint argcomplete"
 pip install ansible ansible-navigator ansible-lint argcomplete
 
-echo "pip install molecule molecule-vagrant molecule-lxd tox"
-pip install molecule molecule-vagrant molecule-lxd tox
+echo "pip install molecule molecule-plugins \"molecule[docker]\" molecule-vagrant tox"
+pip install molecule molecule-plugins "molecule[docker]" molecule-vagrant tox

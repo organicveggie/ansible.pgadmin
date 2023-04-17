@@ -1,19 +1,7 @@
 ---
 name: "Molecule"
 
-on:
-  push:
-    branches:
-      - "main"
-  pull_request:
-    branches:
-      - "main"
-  workflow_dispatch: null
-  # schedule:
-  #   - cron: "0 7 * * 0"
-
-env:
-  PROJECT_DIRECTORY: "organicveggie.pgadmin_docker"
+on: workflow_dispatch
 
 defaults:
   run:

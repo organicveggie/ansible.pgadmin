@@ -9,15 +9,6 @@ on:
     branches:
       - "main"
   workflow_dispatch: null
-  schedule:
-    - cron: "0 6 * * 0"
-
-env:
-  PROJECT_DIRECTORY: "organicveggie.pgadmin_docker"
-
-defaults:
-  run:
-    working-directory: "$PROJECT_DIRECTORY"
 
 jobs:
   lint:
@@ -26,8 +17,6 @@ jobs:
     steps:
       - name: "Check out the codebase."
         uses: "actions/checkout@v3"
-        with:
-          path: "$PROJECT_DIRECTORY"
 
       - name: "Set up Python 3."
         uses: "actions/setup-python@v4"
@@ -39,7 +28,7 @@ jobs:
 
       - name: "Install Ansible role requirements"
         run: >
-          ansible-galaxy role install --role-file molecule/resources/requirements.yml
+          ansible-galaxy role install --role-file requirements.yml
 
       - name: "Run linters"
         run: |
