@@ -80,12 +80,12 @@ argument_specs:
 
       pgadmin_docker_network_ipv4:
         type: "str"
-        default: "null"
+        required: false
         description: "The container’s IPv4 address in the default network. Defaults to using DHCP."
 
       pgadmin_docker_network_ipv6:
         type: "str"
-        default: "null"
+        required: false
         description:
           The container’s IPv6 address in the default network. Defaults to using DHCP. Only applies
           if IPv6 is enabled in the default network.
