@@ -36,12 +36,12 @@ argument_specs:
         default: "1GB"
         description: "Amount of memory to allocate to the container."
 
-      pgadmin_default_email:
+      pgadmin_docker_admin_email:
         type: "str"
         default: "admin@example.com"
         description: "Email address used as the initial administrator account."
 
-      pgadmin_default_password:
+      pgadmin_docker_admin_password:
         type: "str"
         default: "changeme"
         description: "Password for the initial administrator account."

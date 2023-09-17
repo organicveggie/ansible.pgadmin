@@ -78,8 +78,8 @@
     networks: "{{ _pgadmin_docker_all_networks }}"
     env:
       PGADMIN_LISTEN_PORT: "{{ pgadmin_docker_port }}"
-      PGADMIN_DEFAULT_EMAIL: "{{ pgadmin_default_email }}"
-      PGADMIN_DEFAULT_PASSWORD: "{{ pgadmin_default_password }}"
+      PGADMIN_DEFAULT_EMAIL: "{{ pgadmin_docker_admin_email }}"
+      PGADMIN_DEFAULT_PASSWORD: "{{ pgadmin_docker_admin_password }}"
       PGADMIN_DISABLE_POSTFIX: "True"
       PGADMIN_CONFIG_MAIL_SERVER: "'{{ pgadmin_docker_email_server | default(omit) }}'"
       PGADMIN_CONFIG_MAIL_PORT: "{{ pgadmin_docker_email_port | default(omit) }}"

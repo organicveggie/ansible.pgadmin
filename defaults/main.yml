@@ -137,10 +137,10 @@ pgadmin_docker_host_domain: "example.com"
 #####
 
 # Email address used as the initial administrator account.
-pgadmin_default_email: "admin@example.com"
+pgadmin_docker_admin_email: "admin@example.com"
 
 # Password for the initial administrator account.
-pgadmin_default_password: "changeme"
+pgadmin_docker_admin_password: "changeme"
 
 #####
 # Mail server settings
